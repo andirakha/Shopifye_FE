@@ -1,0 +1,42 @@
+name: shopifye_e_commerce
+description: A new Flutter project.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.1.0 <4.0.0'
+
+dependencies:
+  curved_navigation_bar: ^1.0.3
+  cloud_firestore: ^4.13.6
+  firebase_auth: ^4.15.3
+  firebase_core: ^2.24.2
+  flutter:
+    sdk: flutter
+  convex_bottom_bar: ^3.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - lib/assets/
+  fonts:
+    - family: ErasDemiITC
+      fonts:
+        - asset: lib/fonts/ErasDemiITC-Regular.ttf
+    - family: Leelawadee
+      fonts:
+        - asset: lib/fonts/Leelawadee-Bold.ttf
+    - family: Consolas
+      fonts:
+        - asset: lib/fonts/Consolas-Regular.ttf
+    - family: LucidaFax
+      fonts:
+        - asset: lib/fonts/LucidaFax-Regular.ttf
+    - family: Nirmala
+      fonts:
+        - asset: lib/fonts/Nirmala-Regular.ttf
