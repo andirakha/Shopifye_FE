@@ -1,5 +1,7 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import "package:flutter/material.dart";
+import 'package:shopifye_e_commerce/controllers/product_controller.dart';
+import 'package:shopifye_e_commerce/models/product.dart';
 import 'package:shopifye_e_commerce/pages/catalogue_page.dart';
 import 'package:shopifye_e_commerce/pages/category_page.dart';
 import 'package:shopifye_e_commerce/pages/trolley_page.dart';
@@ -200,99 +202,153 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String text = "This is home page";
-  List category = ["DRESS", "BAG", "ACCESSORIES", "FOOTWEAR"];
+  late List<Product> products;
+  bool liked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    products = [];
+    getData();
+  }
+
+  Future<void> getData() async {
+    final List<Product> data = await getProducts();
+    if (mounted) {
+      setState(
+        () {
+          products = data;
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        alignment: Alignment.center,
-        child: Column(
-          children: [
-            SizedBox(
-              height: 100,
-            ),
-            Wrap(
-              children: category.map((a_category) {
-                return Container(
-                  margin: EdgeInsets.all(10),
-                  width: (MediaQuery.of(context).size.width / 2) - 30,
-                  decoration: BoxDecoration(
-                    color: Color(0xffE9FFE1),
-                  ),
-                  child: Column(
-                    children: [
-                      UnconstrainedBox(
-                        child: Container(
-                          margin: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                          height: (MediaQuery.of(context).size.width / 2) - 60,
-                          width: (MediaQuery.of(context).size.width / 2) - 60,
-                          decoration: BoxDecoration(
-                            color: Color(0xffADD79E),
-                          ),
-                          child: Image.network(
-                              'https://firebasestorage.googleapis.com/v0/b/shopifye-e5e59.appspot.com/o/Accessories%2FUntitled89_20231225193953.png?alt=media&token=e320ad5e-6a07-4d8b-8e07-0e42e275fd91'),
-                        ),
+    // ignore: unnecessary_null_comparison
+    if (products.length == 0) {
+      return Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Color(0xffac2c62)),
+        ),
+      );
+    } else {
+      return SingleChildScrollView(
+        child: Container(
+          alignment: Alignment.center,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 50,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                      child: Image(
+                        image: AssetImage('lib/assets/space1.png'),
                       ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        margin: EdgeInsets.fromLTRB(15, 0, 15, 30),
-                        child: Text(
-                          'Nama Produk',
-                          style: TextStyle(
-                            fontFamily: 'Nirmala',
-                            fontWeight: FontWeight.w900,
-                            color: Color(0xff8A1B63),
-                          ),
-                        ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                      child: Image(
+                        image: AssetImage('lib/assets/space3.png'),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                      child: Image(
+                        image: AssetImage('lib/assets/space2.png'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Wrap(
+                children: [
+                  for (int index = 0; index < products.length; index++)
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      width: (MediaQuery.of(context).size.width / 2) - 30,
+                      decoration: BoxDecoration(
+                        color: Color(0xffE9FFE1),
+                      ),
+                      child: Column(
                         children: [
-                          Column(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.fromLTRB(15, 0, 0, 15),
-                                child: Text(
-                                  'Rp 25.000',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w100,
-                                    fontFamily: 'Leelawadee',
-                                    fontSize: 20,
-                                    color: Color(0xff2F7318),
-                                  ),
-                                ),
+                          UnconstrainedBox(
+                            child: Container(
+                              margin: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                              height:
+                                  (MediaQuery.of(context).size.width / 2) - 60,
+                              width:
+                                  (MediaQuery.of(context).size.width / 2) - 60,
+                              decoration: BoxDecoration(
+                                color: Color(0xffADD79E),
                               ),
-                            ],
+                              child: Image.network(products[index].photo),
+                            ),
                           ),
-                          Column(
+                          Container(
+                            alignment: Alignment.topLeft,
+                            margin: EdgeInsets.fromLTRB(15, 0, 15, 30),
+                            child: Text(
+                              products[index].nama,
+                              style: TextStyle(
+                                fontFamily: 'Nirmala',
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xff8A1B63),
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                margin: EdgeInsets.fromLTRB(0, 0, 15, 15),
-                                child: Image(
-                                  image: AssetImage(
-                                    'lib/assets/not_liked.png',
+                              Column(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(15, 0, 0, 15),
+                                    child: Text(
+                                      'Rp ' + products[index].harga.toString(),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w100,
+                                        fontFamily: 'Leelawadee',
+                                        fontSize: 20,
+                                        color: Color(0xff2F7318),
+                                      ),
+                                    ),
                                   ),
-                                  width: 40,
-                                  height: 40,
-                                ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(0, 0, 15, 15),
+                                    child: Image(
+                                      image: AssetImage(
+                                        'lib/assets/not_liked.png',
+                                      ),
+                                      width: 40,
+                                      height: 40,
+                                    ),
+                                  )
+                                ],
                               )
                             ],
-                          )
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
-            SizedBox(
-              height: 90,
-            ),
-          ],
+                    )
+                ],
+              ),
+              SizedBox(
+                height: 90,
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 }

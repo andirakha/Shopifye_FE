@@ -18,6 +18,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final passwordRetypeController = TextEditingController();
   final phoneNumberController = TextEditingController();
   final dateOfBirthController = TextEditingController();
+  final List catalog = ['tes', 'aja', 'dulu'];
   bool passwordVisible = true;
   bool passwordRetypeVisible = true;
 
@@ -68,7 +69,8 @@ class _RegisterPageState extends State<RegisterPage> {
               .set({
             'username': usernameController.text,
             'dateofbirth': dateOfBirthController.text,
-            'phonenumber': phoneNumberController.text
+            'phonenumber': phoneNumberController.text,
+            'catalog': catalog
           });
           Navigator.pop(context);
         } else {
@@ -233,7 +235,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: TextField(
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.allow(
-                          RegExp(r'[A-Za-z0-9\s]'))
+                        RegExp(r'[A-Za-z0-9\s]'),
+                      ),
+                      LengthLimitingTextInputFormatter(40),
                     ],
                     controller: usernameController,
                     style: TextStyle(
@@ -260,6 +264,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextField(
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(40),
+                    ],
                     controller: emailController,
                     style: TextStyle(
                       color: Colors.white,
@@ -285,6 +292,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextField(
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(40),
+                    ],
                     controller: passwordController,
                     obscureText: passwordVisible,
                     style: TextStyle(
@@ -325,6 +335,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextField(
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(40),
+                    ],
                     controller: passwordRetypeController,
                     obscureText: passwordRetypeVisible,
                     style: TextStyle(
@@ -396,7 +409,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: TextField(
                     keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'[0-9]'),
+                      ),
+                      LengthLimitingTextInputFormatter(20),
                     ],
                     controller: phoneNumberController,
                     style: TextStyle(
