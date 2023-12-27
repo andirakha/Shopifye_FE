@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:shopifye_e_commerce/controllers/product_controller.dart';
 import 'package:shopifye_e_commerce/models/product.dart';
@@ -204,12 +206,17 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late List<Product> products;
   bool liked = false;
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final usersCollection = FirebaseFirestore.instance.collection("Users");
+  List like_status = [];
+  dynamic firestoreData;
 
   @override
   void initState() {
     super.initState();
     products = [];
     getData();
+    getFirestoreData();
   }
 
   Future<void> getData() async {
@@ -223,16 +230,34 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> toggleLike(List like_status) async {
+    await usersCollection.doc(currentUser.email).update(
+      {'likestatus': like_status},
+    );
+  }
+
+  Future<dynamic> getFirestoreData() async {
+    final DocumentReference document =
+        FirebaseFirestore.instance.collection("Users").doc(currentUser.email);
+
+    await document.get().then<dynamic>((DocumentSnapshot snapshot) async {
+      setState(() {
+        firestoreData = snapshot.data()! as Map<String, dynamic>;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // ignore: unnecessary_null_comparison
-    if (products.length == 0) {
+    if (products.length == 0 || firestoreData == null) {
       return Center(
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(Color(0xffac2c62)),
         ),
       );
     } else {
+      like_status = firestoreData['likestatus'];
       return SingleChildScrollView(
         child: Container(
           alignment: Alignment.center,
@@ -325,12 +350,25 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Container(
                                     margin: EdgeInsets.fromLTRB(0, 0, 15, 15),
-                                    child: Image(
-                                      image: AssetImage(
-                                        'lib/assets/not_liked.png',
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          like_status[products[index].id - 1] =
+                                              !like_status[
+                                                  products[index].id - 1];
+                                          toggleLike(like_status);
+                                        });
+                                      },
+                                      child: Image(
+                                        image: AssetImage(
+                                          (firestoreData['likestatus'][index] ==
+                                                  false
+                                              ? 'lib/assets/not_liked.png'
+                                              : 'lib/assets/liked.png'),
+                                        ),
+                                        width: 40,
+                                        height: 40,
                                       ),
-                                      width: 40,
-                                      height: 40,
                                     ),
                                   )
                                 ],

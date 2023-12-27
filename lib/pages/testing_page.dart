@@ -11,15 +11,18 @@ class TestingPage extends StatefulWidget {
 
 class _TestingPageState extends State<TestingPage> {
   final currentUser = FirebaseAuth.instance.currentUser!;
-  List category = [];
-  dynamic data;
-  Future<dynamic> getData() async {
+
+  List like_status = [];
+
+  dynamic firestoreData;
+
+  Future<dynamic> getFirestoreData() async {
     final DocumentReference document =
         FirebaseFirestore.instance.collection("Users").doc(currentUser.email);
 
     await document.get().then<dynamic>((DocumentSnapshot snapshot) async {
       setState(() {
-        data = snapshot.data()! as Map<String, dynamic>;
+        firestoreData = snapshot.data()! as Map<String, dynamic>;
       });
     });
   }
@@ -28,21 +31,59 @@ class _TestingPageState extends State<TestingPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData();
+    getFirestoreData();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (data == null) {
+    if (firestoreData == null) {
       return Center(
         child: Text('wait'),
       );
     } else {
-      category = data['catalog'];
+      like_status = firestoreData['likestatus'];
       return Center(
         child: Column(
           children: [
-            Text(category[1]),
+            Container(
+              color: Colors.red,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        Image(
+                          image: AssetImage('lib/assets/home.png'),
+                          height: 20,
+                          width: 20,
+                        )
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Image(
+                          image: AssetImage('lib/assets/home.png'),
+                          height: 20,
+                          width: 20,
+                        )
+                      ],
+                    ),
+                    Expanded(
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                                'asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf '))),
+                    Column(
+                      children: [
+                        Image(
+                          image: AssetImage('lib/assets/home.png'),
+                          height: 20,
+                          width: 20,
+                        )
+                      ],
+                    )
+                  ]),
+            )
           ],
         ),
       );

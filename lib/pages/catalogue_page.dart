@@ -1,3 +1,5 @@
+import "package:cloud_firestore/cloud_firestore.dart";
+import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:shopifye_e_commerce/controllers/product_controller.dart";
 import "package:shopifye_e_commerce/models/product.dart";
@@ -13,12 +15,17 @@ class _DressPageState extends State<DressPage> {
   late List<Product> products;
   late List<Product> filteredProducts;
   bool liked = false;
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final usersCollection = FirebaseFirestore.instance.collection("Users");
+  List like_status = [];
+  dynamic firestoreData;
 
   @override
   void initState() {
     super.initState();
     products = [];
     getData();
+    getFirestoreData();
   }
 
   void filteredList() {
@@ -42,16 +49,34 @@ class _DressPageState extends State<DressPage> {
     }
   }
 
+  Future<void> toggleLike(List like_status) async {
+    await usersCollection.doc(currentUser.email).update(
+      {'likestatus': like_status},
+    );
+  }
+
+  Future<dynamic> getFirestoreData() async {
+    final DocumentReference document =
+        FirebaseFirestore.instance.collection("Users").doc(currentUser.email);
+
+    await document.get().then<dynamic>((DocumentSnapshot snapshot) async {
+      setState(() {
+        firestoreData = snapshot.data()! as Map<String, dynamic>;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // ignore: unnecessary_null_comparison
-    if (products.length == 0) {
+    if (products.length == 0 || firestoreData == null) {
       return Center(
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(Color(0xffac2c62)),
         ),
       );
     } else {
+      like_status = firestoreData['likestatus'];
       filteredList();
       return SingleChildScrollView(
         child: Container(
@@ -135,12 +160,29 @@ class _DressPageState extends State<DressPage> {
                                 children: [
                                   Container(
                                     margin: EdgeInsets.fromLTRB(0, 0, 15, 15),
-                                    child: Image(
-                                      image: AssetImage(
-                                        'lib/assets/not_liked.png',
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          like_status[
+                                              filteredProducts[index].id -
+                                                  1] = !like_status[
+                                              filteredProducts[index].id - 1];
+                                          toggleLike(like_status);
+                                        });
+                                      },
+                                      child: Image(
+                                        image: AssetImage(
+                                          (firestoreData['likestatus'][
+                                                      filteredProducts[index]
+                                                              .id -
+                                                          1] ==
+                                                  false
+                                              ? 'lib/assets/not_liked.png'
+                                              : 'lib/assets/liked.png'),
+                                        ),
+                                        width: 40,
+                                        height: 40,
                                       ),
-                                      width: 40,
-                                      height: 40,
                                     ),
                                   )
                                 ],
@@ -174,12 +216,17 @@ class _BagPageState extends State<BagPage> {
   late List<Product> products;
   late List<Product> filteredProducts;
   bool liked = false;
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final usersCollection = FirebaseFirestore.instance.collection("Users");
+  List like_status = [];
+  dynamic firestoreData;
 
   @override
   void initState() {
     super.initState();
     products = [];
     getData();
+    getFirestoreData();
   }
 
   void filteredList() {
@@ -203,16 +250,34 @@ class _BagPageState extends State<BagPage> {
     }
   }
 
+  Future<void> toggleLike(List like_status) async {
+    await usersCollection.doc(currentUser.email).update(
+      {'likestatus': like_status},
+    );
+  }
+
+  Future<dynamic> getFirestoreData() async {
+    final DocumentReference document =
+        FirebaseFirestore.instance.collection("Users").doc(currentUser.email);
+
+    await document.get().then<dynamic>((DocumentSnapshot snapshot) async {
+      setState(() {
+        firestoreData = snapshot.data()! as Map<String, dynamic>;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // ignore: unnecessary_null_comparison
-    if (products.length == 0) {
+    if (products.length == 0 || firestoreData == null) {
       return Center(
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(Color(0xffac2c62)),
         ),
       );
     } else {
+      like_status = firestoreData['likestatus'];
       filteredList();
       return SingleChildScrollView(
         child: Container(
@@ -296,12 +361,29 @@ class _BagPageState extends State<BagPage> {
                                 children: [
                                   Container(
                                     margin: EdgeInsets.fromLTRB(0, 0, 15, 15),
-                                    child: Image(
-                                      image: AssetImage(
-                                        'lib/assets/not_liked.png',
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          like_status[
+                                              filteredProducts[index].id -
+                                                  1] = !like_status[
+                                              filteredProducts[index].id - 1];
+                                          toggleLike(like_status);
+                                        });
+                                      },
+                                      child: Image(
+                                        image: AssetImage(
+                                          (firestoreData['likestatus'][
+                                                      filteredProducts[index]
+                                                              .id -
+                                                          1] ==
+                                                  false
+                                              ? 'lib/assets/not_liked.png'
+                                              : 'lib/assets/liked.png'),
+                                        ),
+                                        width: 40,
+                                        height: 40,
                                       ),
-                                      width: 40,
-                                      height: 40,
                                     ),
                                   )
                                 ],
@@ -335,12 +417,17 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
   late List<Product> products;
   late List<Product> filteredProducts;
   bool liked = false;
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final usersCollection = FirebaseFirestore.instance.collection("Users");
+  List like_status = [];
+  dynamic firestoreData;
 
   @override
   void initState() {
     super.initState();
     products = [];
     getData();
+    getFirestoreData();
   }
 
   void filteredList() {
@@ -364,16 +451,34 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     }
   }
 
+  Future<void> toggleLike(List like_status) async {
+    await usersCollection.doc(currentUser.email).update(
+      {'likestatus': like_status},
+    );
+  }
+
+  Future<dynamic> getFirestoreData() async {
+    final DocumentReference document =
+        FirebaseFirestore.instance.collection("Users").doc(currentUser.email);
+
+    await document.get().then<dynamic>((DocumentSnapshot snapshot) async {
+      setState(() {
+        firestoreData = snapshot.data()! as Map<String, dynamic>;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // ignore: unnecessary_null_comparison
-    if (products.length == 0) {
+    if (products.length == 0 || firestoreData == null) {
       return Center(
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(Color(0xffac2c62)),
         ),
       );
     } else {
+      like_status = firestoreData['likestatus'];
       filteredList();
       return SingleChildScrollView(
         child: Container(
@@ -457,12 +562,29 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
                                 children: [
                                   Container(
                                     margin: EdgeInsets.fromLTRB(0, 0, 15, 15),
-                                    child: Image(
-                                      image: AssetImage(
-                                        'lib/assets/not_liked.png',
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          like_status[
+                                              filteredProducts[index].id -
+                                                  1] = !like_status[
+                                              filteredProducts[index].id - 1];
+                                          toggleLike(like_status);
+                                        });
+                                      },
+                                      child: Image(
+                                        image: AssetImage(
+                                          (firestoreData['likestatus'][
+                                                      filteredProducts[index]
+                                                              .id -
+                                                          1] ==
+                                                  false
+                                              ? 'lib/assets/not_liked.png'
+                                              : 'lib/assets/liked.png'),
+                                        ),
+                                        width: 40,
+                                        height: 40,
                                       ),
-                                      width: 40,
-                                      height: 40,
                                     ),
                                   )
                                 ],
@@ -496,12 +618,17 @@ class _FootwearPageState extends State<FootwearPage> {
   late List<Product> products;
   late List<Product> filteredProducts;
   bool liked = false;
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final usersCollection = FirebaseFirestore.instance.collection("Users");
+  List like_status = [];
+  dynamic firestoreData;
 
   @override
   void initState() {
     super.initState();
     products = [];
     getData();
+    getFirestoreData();
   }
 
   void filteredList() {
@@ -525,16 +652,34 @@ class _FootwearPageState extends State<FootwearPage> {
     }
   }
 
+  Future<void> toggleLike(List like_status) async {
+    await usersCollection.doc(currentUser.email).update(
+      {'likestatus': like_status},
+    );
+  }
+
+  Future<dynamic> getFirestoreData() async {
+    final DocumentReference document =
+        FirebaseFirestore.instance.collection("Users").doc(currentUser.email);
+
+    await document.get().then<dynamic>((DocumentSnapshot snapshot) async {
+      setState(() {
+        firestoreData = snapshot.data()! as Map<String, dynamic>;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // ignore: unnecessary_null_comparison
-    if (products.length == 0) {
+    if (products.length == 0 || firestoreData == null) {
       return Center(
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(Color(0xffac2c62)),
         ),
       );
     } else {
+      like_status = firestoreData['likestatus'];
       filteredList();
       return SingleChildScrollView(
         child: Container(
@@ -618,12 +763,29 @@ class _FootwearPageState extends State<FootwearPage> {
                                 children: [
                                   Container(
                                     margin: EdgeInsets.fromLTRB(0, 0, 15, 15),
-                                    child: Image(
-                                      image: AssetImage(
-                                        'lib/assets/not_liked.png',
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          like_status[
+                                              filteredProducts[index].id -
+                                                  1] = !like_status[
+                                              filteredProducts[index].id - 1];
+                                          toggleLike(like_status);
+                                        });
+                                      },
+                                      child: Image(
+                                        image: AssetImage(
+                                          (firestoreData['likestatus'][
+                                                      filteredProducts[index]
+                                                              .id -
+                                                          1] ==
+                                                  false
+                                              ? 'lib/assets/not_liked.png'
+                                              : 'lib/assets/liked.png'),
+                                        ),
+                                        width: 40,
+                                        height: 40,
                                       ),
-                                      width: 40,
-                                      height: 40,
                                     ),
                                   )
                                 ],

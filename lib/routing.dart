@@ -3,7 +3,6 @@ import "package:flutter/material.dart";
 import "package:shopifye_e_commerce/pages/home_page.dart";
 import "package:shopifye_e_commerce/pages/login_page.dart";
 import "package:shopifye_e_commerce/pages/register_page.dart";
-import "package:shopifye_e_commerce/pages/testing_page.dart";
 
 class AuthRouting extends StatelessWidget {
   const AuthRouting({super.key});
@@ -15,7 +14,7 @@ class AuthRouting extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return TestingPage();
+            return AppBarNavBar();
           } else {
             return LoginOrRegisterRouting();
           }
