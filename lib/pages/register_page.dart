@@ -19,6 +19,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final phoneNumberController = TextEditingController();
   final dateOfBirthController = TextEditingController();
   final like_status = List.filled(34, false);
+  final checkouted = List.filled(34, false);
+  final quantity_wishlist = List.filled(34, 1);
   bool passwordVisible = true;
   bool passwordRetypeVisible = true;
 
@@ -70,7 +72,9 @@ class _RegisterPageState extends State<RegisterPage> {
             'username': usernameController.text,
             'dateofbirth': dateOfBirthController.text,
             'phonenumber': phoneNumberController.text,
-            'likestatus': like_status
+            'likestatus': like_status,
+            'checkouted': checkouted,
+            'quantitywishlist': quantity_wishlist
           });
           Navigator.pop(context);
         } else {

@@ -17,6 +17,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Shopifye',
+      initialRoute: '/',
       home: AuthRouting(),
     );
   }

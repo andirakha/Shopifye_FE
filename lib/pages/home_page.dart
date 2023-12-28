@@ -74,8 +74,8 @@ class _AppBarNavBarState extends State<AppBarNavBar> {
                 hoverColor: Colors.transparent,
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  await Navigator.push(
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
@@ -96,6 +96,7 @@ class _AppBarNavBarState extends State<AppBarNavBar> {
                       },
                     ),
                   );
+                  setState(() {});
                 },
                 icon: ImageIcon(
                   AssetImage('lib/assets/trolley.png'),
@@ -257,133 +258,137 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     } else {
+      setState(() {
+        getFirestoreData();
+      });
       like_status = firestoreData['likestatus'];
       return SingleChildScrollView(
-        child: Container(
-          alignment: Alignment.center,
-          child: Column(
-            children: [
-              SizedBox(
-                height: 50,
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                      child: Image(
-                        image: AssetImage('lib/assets/space1.png'),
+        child: SafeArea(
+          child: Container(
+            alignment: Alignment.center,
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                        child: Image(
+                          image: AssetImage('lib/assets/space1.png'),
+                        ),
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                      child: Image(
-                        image: AssetImage('lib/assets/space3.png'),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                        child: Image(
+                          image: AssetImage('lib/assets/space3.png'),
+                        ),
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                      child: Image(
-                        image: AssetImage('lib/assets/space2.png'),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                        child: Image(
+                          image: AssetImage('lib/assets/space2.png'),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Wrap(
-                children: [
-                  for (int index = 0; index < products.length; index++)
-                    Container(
-                      margin: EdgeInsets.all(10),
-                      width: (MediaQuery.of(context).size.width / 2) - 30,
-                      decoration: BoxDecoration(
-                        color: Color(0xffE9FFE1),
-                      ),
-                      child: Column(
-                        children: [
-                          UnconstrainedBox(
-                            child: Container(
-                              margin: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                              height:
-                                  (MediaQuery.of(context).size.width / 2) - 60,
-                              width:
-                                  (MediaQuery.of(context).size.width / 2) - 60,
-                              decoration: BoxDecoration(
-                                color: Color(0xffADD79E),
-                              ),
-                              child: Image.network(products[index].photo),
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.topLeft,
-                            margin: EdgeInsets.fromLTRB(15, 0, 15, 30),
-                            child: Text(
-                              products[index].nama,
-                              style: TextStyle(
-                                fontFamily: 'Nirmala',
-                                fontWeight: FontWeight.w900,
-                                color: Color(0xff8A1B63),
+                Wrap(
+                  children: [
+                    for (int index = 0; index < products.length; index++)
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        width: (MediaQuery.of(context).size.width / 2) - 30,
+                        decoration: BoxDecoration(
+                          color: Color(0xffE9FFE1),
+                        ),
+                        child: Column(
+                          children: [
+                            UnconstrainedBox(
+                              child: Container(
+                                margin: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                                height:
+                                    (MediaQuery.of(context).size.width / 2) -
+                                        60,
+                                width: (MediaQuery.of(context).size.width / 2) -
+                                    60,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffADD79E),
+                                ),
+                                child: Image.network(products[index].photo),
                               ),
                             ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(15, 0, 0, 15),
-                                    child: Text(
-                                      'Rp ' + products[index].harga.toString(),
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w100,
-                                        fontFamily: 'Leelawadee',
-                                        fontSize: 20,
-                                        color: Color(0xff2F7318),
+                            Container(
+                              alignment: Alignment.topLeft,
+                              margin: EdgeInsets.fromLTRB(15, 0, 15, 30),
+                              child: Text(
+                                products[index].nama,
+                                style: TextStyle(
+                                  fontFamily: 'Nirmala',
+                                  fontWeight: FontWeight.w900,
+                                  color: Color(0xff8A1B63),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.fromLTRB(15, 0, 0, 15),
+                                      child: Text(
+                                        'Rp ' +
+                                            products[index].harga.toString(),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w100,
+                                          fontFamily: 'Leelawadee',
+                                          fontSize: 20,
+                                          color: Color(0xff2F7318),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(0, 0, 15, 15),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.fromLTRB(0, 0, 15, 15),
+                                      child: GestureDetector(
+                                        onTap: () {
                                           like_status[products[index].id - 1] =
                                               !like_status[
                                                   products[index].id - 1];
                                           toggleLike(like_status);
-                                        });
-                                      },
-                                      child: Image(
-                                        image: AssetImage(
-                                          (firestoreData['likestatus'][index] ==
-                                                  false
-                                              ? 'lib/assets/not_liked.png'
-                                              : 'lib/assets/liked.png'),
+                                          setState(() {});
+                                        },
+                                        child: Image(
+                                          image: AssetImage(
+                                            (firestoreData['likestatus']
+                                                        [index] ==
+                                                    false
+                                                ? 'lib/assets/not_liked.png'
+                                                : 'lib/assets/liked.png'),
+                                          ),
+                                          width: 40,
+                                          height: 40,
                                         ),
-                                        width: 40,
-                                        height: 40,
                                       ),
-                                    ),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    )
-                ],
-              ),
-              SizedBox(
-                height: 90,
-              ),
-            ],
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                  ],
+                ),
+                SizedBox(
+                  height: 90,
+                ),
+              ],
+            ),
           ),
         ),
       );
